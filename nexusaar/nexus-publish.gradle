@@ -1,0 +1,30 @@
+apply plugin: 'maven'
+
+afterEvaluate { project ->
+    uploadArchives {
+        configuration = configurations.archives
+        repositories {
+            mavenDeployer {
+                repository(url: 'http://localhost:8081/repository/bgatest/') {
+                    authentication(userName: 'bingoogolapple', password: '111111')
+                }
+
+                pom.project {
+                    groupId = 'cn.bingoogolapple'
+                    artifactId = PUBLISH_AAR_ARTIFACT_ID
+                    version = VERSION_NAME
+                    packaging 'aar'
+                }
+            }
+        }
+    }
+
+    task androidSourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.sourceFiles
+    }
+
+    artifacts {
+        archives androidSourcesJar
+    }
+}
